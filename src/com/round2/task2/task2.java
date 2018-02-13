@@ -13,10 +13,10 @@ class task2 {
             switch (val.nextLine()) {
                 case "Да":
                     String mathFunction = scanData();
-                    Parser n = new Parser();
-                    List<String> expression = n.reversePolandNotationParsing(mathFunction);
-                    if (n.flagOfValidity && calculateData(expression)!=null)
-                        System.out.println(calculateData(expression));
+                    Parser parserObject = new Parser();
+                    List<String> eelementpression = parserObject.reversePolandNotationParsing(mathFunction);
+                    if (parserObject.flagOfValidity && calculateData(eelementpression)!=null)
+                        System.out.println(calculateData(eelementpression));
                     continue;
                 case "Нет":
                     break;
@@ -34,15 +34,15 @@ class task2 {
         return dataScaner.nextLine();
     }
 
-    public static BigDecimal calculateData(List<String> postfix) {
+    public static BigDecimal calculateData(List<String> postfielement) {
         Deque<BigDecimal> stack = new ArrayDeque<>();
         BigDecimal firstDiggit, secondDiggit;
         try {
-            for (String x : postfix) {
-                switch (x) {
+            for (String element: postfielement) {
+                switch (element) {
                     case "^":
-                        BigDecimal exponent = stack.pop();
-                        stack.push(new BigDecimal(Math.pow(stack.pop().intValue(),(exponent.intValue()))));
+                        int power = stack.pop().intValueExact();
+                        stack.push(new BigDecimal(Math.pow(stack.pop().doubleValue(),power)));
                         break;
                     case "+":
                         stack.push(stack.pop().add(stack.pop()));
@@ -61,19 +61,20 @@ class task2 {
                         if (secondDiggit.intValueExact()==0){
                             System.out.println("деление на 0 невозможно");
                         } else
-                        stack.push(firstDiggit.divide(secondDiggit));
+                        stack.push(new BigDecimal(firstDiggit.doubleValue()/secondDiggit.doubleValue()));
                         break;
                     case "u-":
                         stack.push(stack.pop().negate());
                         break;
                     default:
 
-                        stack.push(new BigDecimal(x));
+                        stack.push(new BigDecimal(element));
                         break;
                 }
             }
         } catch (RuntimeException e){
             System.out.println("Невалидные данные");
+            return null;
         }
         if (stack.size() == 1) return stack.pop();
         else if (stack.size()>1){
